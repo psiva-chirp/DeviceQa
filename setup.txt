@@ -1,0 +1,19 @@
+sudo apt-get upgrade
+git clone https://github.com/respeaker/seeed-voicecard.git
+cd seeed-voicecard
+sudo ./install.sh
+reboot
+
+pip3 install RPI.GPIO
+pip3 install adafruit-blinka
+
+sudo pip3 install adafruit-circuitpython-si7021
+
+sudo pip3 install adafruit-circuitpython-veml7700
+
+sudo pip3 install adafruit-circuitpython-adxl34x
+
+sudo pip3 install adafruit-circuitpython-neopixel
+
+arecord -f cd -Dhw:1 test.wav
+aplay -Dhw:1 test.wav
