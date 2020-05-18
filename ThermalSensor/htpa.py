@@ -25,10 +25,11 @@ class HTPA:
         print(eeprom)
 
         self.temp_table = None
-        for table in temp_table:
-            if table['TABLENUMBER'] == self.TN:
-                self.temp_table = table
         if temp_table is not None:
+            for table in temp_table:
+                if table['TABLENUMBER'] == self.TN:
+                    self.temp_table = table
+        if self.temp_table is not None:
             self.temp_interp_f = interpolate.interp2d(self.temp_table['XTATemps'], self.temp_table['YADValues'], self.temp_table['TempTable'], kind='linear')
         else:
             self.temp_interp_f = None
@@ -299,8 +300,13 @@ class HTPA:
             if col_start_end[0] == -1 or col_start_end[1] == -1:
                 # can't do conversion
                 return im
-            im_temp = self.temp_interp_f(np.ones((im.shape[0],im.shape[1]))*Ta, im + self.temp_table['TABLEOFFSET'])
-            print('here')
+            print(im[16,16])
+            im = im.reshape(-1,)
+            out = [self.temp_interp_f(Ta,YY + self.temp_table['TABLEOFFSET']) for YY in im]
+            im = np.asarray(out).reshape(32,32)
+            print(im[16,16]/10 - 273.15)
+            #im_temp = self.temp_interp_f(np.ones((im.shape[0],))*Ta, im + self.temp_table['TABLEOFFSET'])
+            #print('here')
             '''
             temp_table_data = np.asarray(self.temp_table['TempTable'])
             Ta_alpha = (Ta - self.temp_table['XTATemps'][col_start_end[0]])/(self.temp_table['XTATemps'][col_start_end[1]] - self.temp_table['XTATemps'][col_start_end[0]])
@@ -327,7 +333,6 @@ class HTPA:
         for block in range(4):
             #print("Exposing block " + str(block))
             self.send_command(self.generate_expose_block_command(block, blind=blind, vdd=get_vdd), wait=False)
-
             query = [I2C.Message([0x02]), I2C.Message([0x00], read=True)]
             expected = 1 + (block << 4)
 

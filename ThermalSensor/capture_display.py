@@ -10,7 +10,7 @@ with open('TempTables.json','r') as fid:
 
 i = 0
 
-dev = HTPA()
+dev = HTPA(temp_table=temp_table)
 last_time = None
 running_sum = 0.0
 while(True):
@@ -28,9 +28,9 @@ while(True):
         print(running_sum / i)
     last_time = current_time
     #print(pixel_values)
-    print('Pix range')
-    print(np.min(im))
-    print(np.max(im))
+    #print('Pix range')
+    #print(np.min(im))
+    #print(np.max(im))
     '''
     im = pixel_values
     
@@ -47,13 +47,16 @@ while(True):
     #im = dev.sensitivity_compensation(im)
     '''
     # resize and scale image to make it more viewable on raspberry pi screen
-    im = cv2.resize(im, None, fx=12, fy=12)    
-    print(np.min(im))
-    print(np.max(im))
-    im -= -35
-    im /= (150+35)
+    #im = cv2.resize(im, None, fx=12, fy=12)    
+    #print(np.min(im))
+    #print(np.max(im))
+    im /= 10
+    im -= 273.15
+    print(im[16,16])
+    im -= 20
+    im /= (40-20)
     im[im<0] = 0
-    im[im>1] = 15
+    im[im>1] = 1
     #im -= np.min(im)
     #im /= np.max(im)
     im = im*255
