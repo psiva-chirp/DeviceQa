@@ -5,18 +5,30 @@ cd seeed-voicecard
 sudo ./install.sh
 reboot
 
+#### Test mic/speaker
+arecord -f cd -Dhw:1 test.wav
+aplay -Dhw:1 test.wav
+
 #### Install adafruit-blinka and all sensors and leds
 pip3 install RPI.GPIO
 pip3 install adafruit-blinka
 sudo pip3 install adafruit-circuitpython-si7021
 sudo pip3 install adafruit-circuitpython-veml7700
 sudo pip3 install adafruit-circuitpython-adxl34x
-sudo pip3 install adafruit-circuitpython-neopixel
+sudo pip3 install adafruit-circuitpython-neopixel==5.1.1
 
 #### Thermal sensor install
 add following to /boot/config.txt
 dtoverlay=i2c-gpio,bus=5,i2c_gpio_delay_us=1,i2c_gpio_sda=4,i2c_gpio_scl=5
+reboot
+
+#### Test
+sudo i2cdetect -l
+# you should see bus 5 now
+sudo i2cdetect -y 5
+# you should see two i2c devices 1a and 50
 
 
-arecord -f cd -Dhw:1 test.wav
-aplay -Dhw:1 test.wav
+pip install python-periphery
+sudo apt-get install python-scipy
+
