@@ -39,8 +39,8 @@ dev_capture_thread.start()
 
 last_time = None
 running_sum = 0.0
-try:
-    while(True):
+while(True):
+    try:
         if not VIDEO_QUEUE.empty():
             pixel_values, ts, ptats, vdd, elec_offset = VIDEO_QUEUE.get()
 
@@ -74,8 +74,9 @@ try:
             im = im*255
             im = im.astype(np.uint8)
             i += 1
-except KeyboardInterrupt:
-    STOP_ALL_THREADS = True
+    except KeyboardInterrupt:
+        STOP_ALL_THREADS = True
+        break
 
 
 dev_capture_thread.join()
