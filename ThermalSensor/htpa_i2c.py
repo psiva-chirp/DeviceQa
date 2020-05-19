@@ -67,23 +67,9 @@ class HTPA_calib:
             if col_start_end[0] == -1 or col_start_end[1] == -1:
                 # can't do conversion
                 return im
-            print(im[16,16])
             im = im.reshape(-1,)
             out = [self.temp_interp_f(Ta,YY + self.temp_table['TABLEOFFSET']) for YY in im]
             im = np.asarray(out).reshape(32,32)
-            print(im[16,16]/10 - 273.15)
-            #im_temp = self.temp_interp_f(np.ones((im.shape[0],))*Ta, im + self.temp_table['TABLEOFFSET'])
-            #print('here')
-            '''
-            temp_table_data = np.asarray(self.temp_table['TempTable'])
-            Ta_alpha = (Ta - self.temp_table['XTATemps'][col_start_end[0]])/(self.temp_table['XTATemps'][col_start_end[1]] - self.temp_table['XTATemps'][col_start_end[0]])
-            for r in range(0, im.shape[0]):
-                for c in range(0, im.shape[1]):
-                    row_start_end = [-1, -1]
-                    row_start_end[0] = int((im[r,c] + self.temp_table['TABLEOFFSET'])/self.temp_table['ADEQUIDISTANCE'])
-                    row_start_end[1] = row_start_end[0] + 1
-                    va_alpha = (im[r,c] - self.temp_table['YADValues'][row_start_end[0]])/(self.temp_table['YADValues'][row_start_end[1]] - self.temp_table['YADValues'][row_start_end[0]])
-            '''
         return im
 
 
@@ -109,7 +95,6 @@ class HTPA_i2c:
         eeprom = self.__get_eeprom()
         self.calib_params = self.__extract_eeprom_parameters(eeprom)
         self.eeprom = eeprom
-        print(eeprom)
 
         print("Initializing capture settings with stored calibration data")
         wakeup_and_blind = self.__generate_command(0x01, 0x01) # wake up the device
@@ -208,7 +193,7 @@ class HTPA_i2c:
             self.__first_read()
 
         pixel_values = np.reshape(copy.copy(self.pixel_values), (32, 32))
-        return pixel_values, self.ts, copy.copy(self.ptats), copy.copy(self.vdd), copy.copy(self.elec_offset)
+        return pixel_values, self.ts, copy.copy(self.data_ptats), copy.copy(self.data_vdd), copy.copy(self.elec_offset)
 
     def __set_bias_current(self, bias):
         if bias > 31:
