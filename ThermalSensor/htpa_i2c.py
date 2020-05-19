@@ -49,7 +49,24 @@ class HTPA_calib:
         PCSCALEVAL = 100000000
         im = (im* PCSCALEVAL)/self.calib_param['PixC']
         return im
-
+    
+    def __lookup_temperature(self, im, Ta):
+        left_insert_idx = np.searchsorted(self.temp_table['XTATemps'], Ta)
+        col_start_end = [left_insert_idx-1, left_insert_idx]
+        if col_start_end[1] >= len(self.temp_table['XTATemps']):
+            col_start_end[1] = -1
+        if col_start_end[0] == -1 or col_start_end[1] == -1:
+            # can't do conversion
+            return im
+        im = im.reshape(-1,)
+        out = [self.temp_interp_f(Ta,YY + self.temp_table['TABLEOFFSET']) for YY in im]
+        im = np.asarray(out).reshape(32,32)
+        return im
+    
+    def __apply_global_off_temperature(self, im):
+        im += self.calib_param['GlobalOff']
+        return im
+        
     def calib_image(self, pixel_values, ptats, vdd, elec_offset):
         self.ptats = ptats
         self.vdd = vdd
@@ -60,17 +77,9 @@ class HTPA_calib:
         im = self.__sensitivity_compensation(im)
         Ta = self.__get_ambient_temperature_dK()
         if self.temp_table is not None:
-            left_insert_idx = np.searchsorted(self.temp_table['XTATemps'], Ta)
-            col_start_end = [left_insert_idx-1, left_insert_idx]
-            if col_start_end[1] >= len(self.temp_table['XTATemps']):
-                col_start_end[1] = -1
-            if col_start_end[0] == -1 or col_start_end[1] == -1:
-                # can't do conversion
-                return im
-            im = im.reshape(-1,)
-            out = [self.temp_interp_f(Ta,YY + self.temp_table['TABLEOFFSET']) for YY in im]
-            im = np.asarray(out).reshape(32,32)
-        return im
+            im = self.__lookup_temperature(im, Ta)
+            im = self.__apply_global_off_temperature(im)
+        return im, Ta
 
 
 class HTPA_i2c:
@@ -294,6 +303,11 @@ class HTPA_i2c:
         Pmin = struct.unpack('f', reduce(lambda a,b: a+b, [chr(p) for p in Pmin]))[0]
         Pmax = struct.unpack('f', reduce(lambda a,b: a+b, [chr(p) for p in Pmax]))[0]
         calib_params['PixC'] = (P * (Pmax - Pmin) / 65535. + Pmin) * (epsilon / 100) * float(GlobalGain) / 10000
+        calib_params['GlobalGain'] = GlobalGain
+
+        calib_params['GlobalOff'] = eeprom[0x0054]
+        if calib_params['GlobalOff'] >= 128:
+            calib_params['GlobalOff'] = calib_params['GlobalOff'] - 256
 
         calib_params['gradScale'] = eeprom[0x0008]
 
