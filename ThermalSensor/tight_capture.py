@@ -44,7 +44,7 @@ while(True):
     if not VIDEO_QUEUE.empty():
         pixel_values, ts, ptats, vdd, elec_offset = VIDEO_QUEUE.get()
 
-        im = dev_calib.calib_image(pixel_values, ptats, vdd, elec_offset)
+        im, ambient_temp = dev_calib.calib_image(pixel_values, ptats, vdd, elec_offset)
 
         if last_time is not None:
             diff_time = ts - last_time
@@ -54,18 +54,23 @@ while(True):
             print(running_sum / i)
         last_time = ts
 
+        print('Ambient Temperature: %f C' % (ambient_temp/10.0 - 273.15))
+
         #dK to K
         im /= 10
         #K to C
         im -= 273.15
-        #print(im[16,16])
-        # use range 20 to 40 deg
-        im -= 20
-        im /= (40-20)
+        # print(im[16,16]) # use to get spot temperature measurment of objects
+        
+        # Normalize image in the temperature range 20C to 40C
+        min_valid_temp_C = 20
+        max_valid_temp_C = 40
+        im -= min_valid_temp_C
+        im /= (max_valid_temp_C-min_valid_temp_C)
         im[im<0] = 0
         im[im>1] = 1
-        #im -= np.min(im)
-        #im /= np.max(im)
+
+        # get colour coded image
         im = im*255
         im = im.astype(np.uint8)
         im = cv2.applyColorMap(im, cv2.COLORMAP_JET)
