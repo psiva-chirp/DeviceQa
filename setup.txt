@@ -13,5 +13,10 @@ sudo pip3 install adafruit-circuitpython-veml7700
 sudo pip3 install adafruit-circuitpython-adxl34x
 sudo pip3 install adafruit-circuitpython-neopixel
 
+#### Thermal sensor install
+add following to /boot/config.txt
+dtoverlay=i2c-gpio,bus=5,i2c_gpio_delay_us=1,i2c_gpio_sda=4,i2c_gpio_scl=5
+
+
 arecord -f cd -Dhw:1 test.wav
 aplay -Dhw:1 test.wav
