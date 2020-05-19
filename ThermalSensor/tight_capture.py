@@ -15,7 +15,8 @@ def thermal_data_producer(name, htpa_device):
 
     while True:
         try:
-            pixel_values, ts, ptats, vdd, elec_offset = htpa_device.get_ondemand_frame()
+            #pixel_values, ts, ptats, vdd, elec_offset = htpa_device.get_ondemand_frame()
+            pixel_values, ts, ptats, vdd, elec_offset = htpa_device.get_continuous_frame()
             VIDEO_QUEUE.put((pixel_values, ts, ptats, vdd, elec_offset))
             if STOP_ALL_THREADS:
                 break
@@ -53,9 +54,12 @@ while(True):
             print(running_sum / i)
         last_time = ts
 
+        #dK to K
         im /= 10
+        #K to C
         im -= 273.15
-        print(im[16,16])
+        #print(im[16,16])
+        # use range 20 to 40 deg
         im -= 20
         im /= (40-20)
         im[im<0] = 0
@@ -65,6 +69,7 @@ while(True):
         im = im*255
         im = im.astype(np.uint8)
         im = cv2.applyColorMap(im, cv2.COLORMAP_JET)
+        im = cv2.resize(im, None, fx=12, fy=12)    
         cv2.imshow('frame', im)
         i += 1
 
