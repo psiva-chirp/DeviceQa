@@ -1,0 +1,4 @@
+dtoverlay=i2c-gpio,bus=4,i2c_gpio_delay_us=1,i2c_gpio_sda=8,i2c_gpio_scl=9
+#dtoverlay=i2c-gpio,bus=5,i2c_gpio_delay_us=1,i2c_gpio_sda=13,i2c_gpio_scl=12
+#dtoverlay=i2c5,pins_12_13,baudrate=400000
+#dtoverlay=i2c4,pins_6_7
