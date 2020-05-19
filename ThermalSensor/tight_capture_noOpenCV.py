@@ -1,6 +1,5 @@
 import time
 import numpy as np
-import cv2
 from htpa_i2c import *
 import copy
 import json
@@ -41,47 +40,44 @@ dev_capture_thread.start()
 last_time = None
 running_sum = 0.0
 while(True):
-    if not VIDEO_QUEUE.empty():
-        pixel_values, ts, ptats, vdd, elec_offset = VIDEO_QUEUE.get()
+    try:
+        if not VIDEO_QUEUE.empty():
+            pixel_values, ts, ptats, vdd, elec_offset = VIDEO_QUEUE.get()
 
-        im, ambient_temp = dev_calib.calib_image(pixel_values, ptats, vdd, elec_offset)
+            im, ambient_temp = dev_calib.calib_image(pixel_values, ptats, vdd, elec_offset)
 
-        if last_time is not None:
-            diff_time = ts - last_time
-            running_sum += diff_time
-            print('Timing, diff & avg')
-            print(diff_time)
-            print(running_sum / i)
-        last_time = ts
+            if last_time is not None:
+                diff_time = ts - last_time
+                running_sum += diff_time
+                print('Timing, diff & avg')
+                print(diff_time)
+                print(running_sum / i)
+            last_time = ts
 
-        print('Ambient Temperature: %f C' % (ambient_temp/10.0 - 273.15))
+            print('Ambient Temperature: %f C' % (ambient_temp/10.0 - 273.15))
 
-        #dK to K
-        im /= 10
-        #K to C
-        im -= 273.15
-        # print(im[16,16]) # use to get spot temperature measurment of objects
-        
-        # Normalize image in the temperature range 20C to 40C
-        min_valid_temp_C = 20
-        max_valid_temp_C = 40
-        im -= min_valid_temp_C
-        im /= (max_valid_temp_C-min_valid_temp_C)
-        im[im<0] = 0
-        im[im>1] = 1
+            #dK to K
+            im /= 10
+            #K to C
+            im -= 273.15
+            print(im[16,16]) # use to get spot temperature measurment of objects
+            
+            # Normalize image in the temperature range 20C to 40C
+            min_valid_temp_C = 20
+            max_valid_temp_C = 40
+            im -= min_valid_temp_C
+            im /= (max_valid_temp_C-min_valid_temp_C)
+            im[im<0] = 0
+            im[im>1] = 1
 
-        # get colour coded image
-        im = im*255
-        im = im.astype(np.uint8)
-        im = cv2.applyColorMap(im, cv2.COLORMAP_JET)
-        im = cv2.resize(im, None, fx=12, fy=12)    
-        cv2.imshow('frame', im)
-        i += 1
+            # get colour coded image
+            im = im*255
+            im = im.astype(np.uint8)
+            i += 1
+    except KeyboardInterrupt:
+        STOP_ALL_THREADS = True
+        break
 
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            STOP_ALL_THREADS = True
-            break
 
 dev_capture_thread.join()
 
-cv2.destroyAllWindows()
