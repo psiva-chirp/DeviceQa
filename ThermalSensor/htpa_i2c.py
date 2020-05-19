@@ -164,7 +164,7 @@ class HTPA_i2c:
             self.__first_read()
 
         pixel_values = np.reshape(copy.copy(self.pixel_values), (32, 32))
-        return pixel_values, self.ts, copy.copy(self.ptats), copy.copy(self.vdd), copy.copy(self.elec_offset)
+        return pixel_values, self.ts, copy.copy(self.data_ptats), copy.copy(self.data_vdd), copy.copy(self.elec_offset)
     
     def get_continuous_frame(self):
         ### This is similar to get_ondemand_frame(), however it will request the next frame block 0

@@ -4,7 +4,7 @@ import cv2
 from htpa_i2c import *
 import copy
 import json
-import queue
+import Queue as queue
 import threading
 
 BUF_SIZE = 250
@@ -33,7 +33,8 @@ i = 0
 dev = HTPA_i2c()
 dev_calib = HTPA_calib(temp_table, dev.get_calib_params())
 
-dev_capture_thread = threading.Thread(target=thermal_data_producer, args=(1, dev, ), daemon=True)
+dev_capture_thread = threading.Thread(target=thermal_data_producer, args=(1, dev, ))
+dev_capture_thread.daemon = True
 dev_capture_thread.start()
 
 last_time = None
