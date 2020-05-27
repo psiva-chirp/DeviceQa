@@ -28,7 +28,7 @@ sudo i2cdetect -l
 sudo i2cdetect -y 5
 # you should see two i2c devices 1a and 50
 
-
+### Packages needed for communicating with thermal sensor
 pip install python-periphery
 sudo apt-get install python-scipy
 
