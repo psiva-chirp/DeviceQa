@@ -18,8 +18,14 @@ sudo pip3 install adafruit-circuitpython-adxl34x
 sudo pip3 install adafruit-circuitpython-neopixel==5.1.1
 
 #### Thermal sensor install
+# if using software i2c
 add following to /boot/config.txt
 dtoverlay=i2c-gpio,bus=5,i2c_gpio_delay_us=1,i2c_gpio_sda=4,i2c_gpio_scl=5
+reboot
+
+# if using hardware i2c port 1
+add following to /boot/config.txt
+dtparam=i2c1_baudrate=1000000
 reboot
 
 #### Test
