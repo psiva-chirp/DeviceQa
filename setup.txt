@@ -38,3 +38,19 @@ sudo i2cdetect -y 5
 pip install python-periphery
 sudo apt-get install python-scipy
 
+
+### i2s mic install ###
+#Mic installation is outlined here: https://learn.adafruit.com/adafruit-i2s-mems-microphone-breakout/raspberry-pi-wiring-test
+#Specifically run:
+cd ~
+wget https://raw.githubusercontent.com/adafruit/Raspberry-Pi-Installer-Scripts/master/i2smic.sh
+chmod +x i2smic.sh
+sudo ./i2smic.sh
+
+#Then add volume control (per link above):
+nano ~/.asoundrc
+#add the content of the attached asoundfile.txt to ~/.asoundrc
+
+
+#Use alsamixer to increase volume of the mic. 50% is good level.
+#PyAudio recording code example is attached in test_audio.py … note after changes to .asoundrc we want to use device name ‘dmic-sv’ as shown in test_audio.py
