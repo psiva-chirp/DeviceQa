@@ -51,6 +51,8 @@ sudo ./i2smic.sh
 nano ~/.asoundrc
 #add the content of the attached asoundfile.txt to ~/.asoundrc
 
+sudo apt-get install python3-pyaudio
+
 
 #Use alsamixer to increase volume of the mic. 50% is good level.
 #PyAudio recording code example is attached in test_audio.py … note after changes to .asoundrc we want to use device name ‘dmic-sv’ as shown in test_audio.py
