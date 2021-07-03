@@ -16,9 +16,9 @@ pixels = neopixel.NeoPixel(
 
 for i in range(0,8):
     pixels[i] = (255, 0, 0, 0)
-    time.sleep(1)
+    time.sleep(0.1)
 pixels.fill((0, 0, 255, 0))
 time.sleep(1)
 for i in range(0,8):
     pixels[7-i] = (0, 0, 0, 0)
-    time.sleep(1)
+    time.sleep(0.1)
