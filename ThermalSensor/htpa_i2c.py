@@ -83,7 +83,7 @@ class HTPA_calib:
 
 
 class HTPA_i2c:
-    def __init__(self, address=0x1A, i2c_bus="/dev/i2c-5"):
+    def __init__(self, address=0x1A, i2c_bus="/dev/i2c-1"):
         self.address = address
         self.i2c = I2C(i2c_bus)
         self.blockshift = 4
