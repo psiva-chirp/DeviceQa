@@ -25,3 +25,5 @@ sudo apt-get update
 
     sudo apt install -y gstreamer1.0-alsa
     sudo apt install -y python3-gst-1.0
+
+http://www.swview.org/blog/how-redirect-alsa-output-file
