@@ -34,4 +34,5 @@ gst-launch-1.0 filesrc location=/home/pi/code/DeviceQa/test_audio_48k.wav ! deco
 
 
 
+gst-launch-1.0 filesrc location=/home/pi/code/DeviceQa/test_audio_48k.wav ! decodebin ! audio/x-raw,format=S16LE,layout=interleaved,rate=48000,channels=2 ! volume volume=0.1 ! tee name=sink1 ! queue ! webrtcechoprobe ! alsasink sink1. ! queue ! audioconvert ! wavenc ! filesink location=/home/pi/sink1.wav alsasrc ! audio/x-raw,format=S16LE,layout=interleaved,rate=48000,channels=2 ! audioconvert ! audioresample ! ladspa-filter-so-hpf cutoff-frequency=80 ! audioconvert ! ladspa-amp-so-amp-mono gain=10 ! audioconvert ! tee name=src1 ! queue ! webrtcdsp ! audioconvert ! wavenc ! filesink location=/home/pi/out-ec-voice-80.wav src1. ! queue ! audioconvert ! wavenc ! filesink location=/home/pi/src1.wav
 
