@@ -3,7 +3,7 @@ import numpy as np
 from htpa_i2c import *
 import copy
 import json
-import Queue as queue
+import queue as queue
 import threading
 
 BUF_SIZE = 250

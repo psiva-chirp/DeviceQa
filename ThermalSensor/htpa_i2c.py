@@ -83,7 +83,7 @@ class HTPA_calib:
 
 
 class HTPA_i2c:
-    def __init__(self, address=0x1A, i2c_bus="/dev/i2c-1"):
+    def __init__(self, address=0x1A, i2c_bus="/dev/i2c-0"):
         self.address = address
         self.i2c = I2C(i2c_bus)
         self.blockshift = 4
@@ -300,8 +300,8 @@ class HTPA_i2c:
         GlobalGain = eeprom[0x0055] + (eeprom[0x0056] << 8)
         Pmin = eeprom[0x0000:0x0004]
         Pmax = eeprom[0x0004:0x0008]
-        Pmin = struct.unpack('f', reduce(lambda a,b: a+b, [chr(p) for p in Pmin]))[0]
-        Pmax = struct.unpack('f', reduce(lambda a,b: a+b, [chr(p) for p in Pmax]))[0]
+        Pmin = struct.unpack('f', bytes([p for p in Pmin]))[0]
+        Pmax = struct.unpack('f', bytes([p for p in Pmax]))[0]
         calib_params['PixC'] = (P * (Pmax - Pmin) / 65535. + Pmin) * (epsilon / 100) * float(GlobalGain) / 10000
         calib_params['GlobalGain'] = GlobalGain
 
@@ -312,9 +312,9 @@ class HTPA_i2c:
         calib_params['gradScale'] = eeprom[0x0008]
 
         PTATgradient = eeprom[0x0034:0x0038]
-        calib_params['PTATgradient'] = struct.unpack('f', reduce(lambda a,b: a+b, [chr(p) for p in PTATgradient]))[0]
+        calib_params['PTATgradient'] = struct.unpack('f', bytes([p for p in PTATgradient]))[0]
         PTAToffset = eeprom[0x0038:0x003c]
-        calib_params['PTAToffset'] = struct.unpack('f', reduce(lambda a,b: a+b, [chr(p) for p in PTAToffset]))[0]
+        calib_params['PTAToffset'] = struct.unpack('f', bytes([p for p in PTAToffset]))[0]
 
         calib_params['VddScGrad'] = eeprom[0x004E]
         calib_params['VddScOff'] = eeprom[0x004F]
