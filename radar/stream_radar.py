@@ -314,8 +314,8 @@ class Stream6843AOP:
         byte_count = len(byte_vec)
         if byte_count == 0:
             self.repeated_empty_reads += 1
-            if (self.repeated_empty_reads % MAX_REPEATED_EMPTY_READS) == 0:
-                raise NoDataException(self.repeated_empty_reads)
+            #if (self.repeated_empty_reads % MAX_REPEATED_EMPTY_READS) == 0:
+            #    raise NoDataException(self.repeated_empty_reads)
         else:
             self.repeated_empty_reads = 0
 
@@ -329,7 +329,7 @@ class Stream6843AOP:
         packet_data = None
         packet_format_error = False
         if packet is None:
-            print("Packet is None!")
+            #print("Packet is None!")
             pass
         else:
 
