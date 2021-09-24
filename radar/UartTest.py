@@ -1,7 +1,7 @@
 import serial
 from time import sleep
 
-ser = serial.Serial ("/dev/ttyS0", 115200)    #Open port with baud rate
+ser = serial.Serial ("/dev/ttyS3", 115200)    #Open port with baud rate
 fid = open('temp_radar_config.txt', 'r')
 for line in fid:
     ser.write((line).encode())
