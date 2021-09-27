@@ -4,7 +4,7 @@ from stream_radar import Stream6843AOP
 with open('temp_radar_config.txt', 'r') as fid:
     config_str = fid.read()
 
-streamer = Stream6843AOP(config_str, '/dev/ttyS3', '/dev/ttyS2')
+streamer = Stream6843AOP(config_str, '/dev/ttyS2', '/dev/ttyS3')
 
 while True:
     try:
