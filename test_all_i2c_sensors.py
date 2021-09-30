@@ -21,8 +21,8 @@ while True:
 
     time_since_light_temp = slow_sensor_interval_ms
     if last_light_temp_ts is not None:
-        time_since_light_temp = last_light_temp_ts - ts
-    
+        time_since_light_temp = ts - last_light_temp_ts
+    print(time_since_light_temp)
     if time_since_light_temp >= slow_sensor_interval_ms:
         light = light_sensor.lux()
         temp, humidity = temp_sensor.get_temp_humidity()
