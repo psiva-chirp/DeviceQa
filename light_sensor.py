@@ -145,7 +145,7 @@ class LTR329ALS01:
         return (data0, data1)
 
     def lux(self):
-        # Calculate Lux value from formular in Appendix A of the datasheet
+        # Lux calculation
         light_level = self.light()
         if light_level[0]+light_level[1] > 0:
             ratio = light_level[1]/(light_level[0]+light_level[1])
