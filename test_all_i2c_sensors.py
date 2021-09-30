@@ -17,7 +17,7 @@ last_light_temp_ts = None
 running_sum = 0.0
 num_measurement = 0
 while True:
-    pixel_values, ts, ptats, vdd, elec_offset = htpa_device.get_ondemand_frame()
+    pixel_values, ts, ptats, vdd, elec_offset = thermal_sensor.get_ondemand_frame()
 
     time_since_light_temp = slow_sensor_interval_ms
     if last_light_temp_ts is not None:
