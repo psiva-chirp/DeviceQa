@@ -122,7 +122,7 @@ class LTR329ALS01:
             if data_status == 1:
                 has_new_data = True
                 break
-            time.sleep(self.ALS_RATE_VALUES(self.rate))
+            time.sleep(self.ALS_RATE_VALUES[self.rate])
         return has_new_data
 
     def light(self):
