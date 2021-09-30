@@ -55,6 +55,7 @@ class SHTC3:
 
         # TO DO: check crc
 
+        # convert raw temp humidity reading to actual values
         temp = self.__temp_calc(temp_raw)
         humidity = self.__humidity_calc(humidity_raw)
 
