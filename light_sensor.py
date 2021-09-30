@@ -78,8 +78,6 @@ class LTR329ALS01:
 
         self.max_new_data_checks = 5
 
-        time.sleep(0.01)
-
     def __get_active_cmd(self):
         return ((self.gain & 0x07) << 2) + 0x01
 
