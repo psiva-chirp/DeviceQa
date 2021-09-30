@@ -92,11 +92,17 @@ class LTR329ALS01:
         return query[1].data[0]
 
     def light(self):
-        cmd = self.__get_active_cmd()
-        self.__write(self.ALS_CONTR, cmd)
-        cmd = self.__get_meas_rate_cmd()
-        self.__write(self.ALS_MEAS_RATE, cmd)
-        time.sleep(self.ALS_MAX_WAKEUP_TIME)
+        cntrl = self.__read(self.ALS_CONTR)
+        als_mode = cntrl % 2
+        if als_mode == 0:
+            print('sensor in stand-by mode. Sending wake up cmd')
+            cmd = self.__get_active_cmd()
+            self.__write(self.ALS_CONTR, cmd)
+            cmd = self.__get_meas_rate_cmd()
+            self.__write(self.ALS_MEAS_RATE, cmd)
+            time.sleep(self.ALS_MAX_WAKEUP_TIME)
+        else:
+            print('sensor already active')
 
         c1_0 = self.__read(self.ALS_DATA_CH1_0)
         c1_1 = self.__read(self.ALS_DATA_CH1_1)
