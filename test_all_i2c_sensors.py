@@ -32,7 +32,7 @@ while True:
     if prev_thermal_ts is not None:
         data_interval = ts - prev_thermal_ts
         running_sum += data_interval
-        num_measurement += 0
+        num_measurement += 1
 
         print('Diff: %.1f, %.1f' % (data_interval, running_sum/num_measurement))
 
