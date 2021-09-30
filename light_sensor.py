@@ -57,6 +57,14 @@ class LTR329ALS01:
     ALS_RATE_500ms = 0x03
     ALS_RATE_1000ms = 0x04
     ALS_RATE_2000ms = 0x05
+    ALS_RATE_VALUES = {
+        ALS_RATE_50ms: 0.05,
+        ALS_RATE_100ms: 0.1,
+        ALS_RATE_200ms: 0.2,
+        ALS_RATE_500ms: 0.5,
+        ALS_RATE_1000ms: 1.0,
+        ALS_RATE_2000ms: 2.0,
+    }
 
     ALS_MAX_WAKEUP_TIME = 0.01
 
@@ -67,6 +75,8 @@ class LTR329ALS01:
         self.gain = gain
         self.integration = integration
         self.rate = rate
+
+        self.max_new_data_checks = 5
 
         time.sleep(0.01)
 
@@ -90,8 +100,8 @@ class LTR329ALS01:
         query = [I2C.Message([register]), I2C.Message([0x00], read=True)]
         self.i2c.transfer(self.ALS_I2CADDR, query)
         return query[1].data[0]
-
-    def light(self):
+    
+    def __send_wake_up(self):
         cntrl = self.__read(self.ALS_CONTR)
         als_mode = cntrl % 2
         if als_mode == 0:
@@ -103,6 +113,26 @@ class LTR329ALS01:
             time.sleep(self.ALS_MAX_WAKEUP_TIME)
         else:
             print('sensor already active')
+    
+    def __wait_for_new_reading(self):
+        has_new_data = False
+        for i in range(0,self.max_new_data_checks):
+            status = self.__read(self.ALS_STATUS)
+            data_status = (status >> 2) % 2
+            if data_status == 1:
+                has_new_data = True
+                break
+            time.sleep(self.ALS_RATE_VALUES(self.rate))
+        return has_new_data
+
+    def light(self):
+        self.__send_wake_up()
+
+        has_new_data = self.__wait_for_new_reading()
+
+        if not has_new_data:
+            print('Failed to get new data')
+            return (0, 0)
 
         c1_0 = self.__read(self.ALS_DATA_CH1_0)
         c1_1 = self.__read(self.ALS_DATA_CH1_1)
