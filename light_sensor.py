@@ -1,47 +1,3 @@
-
-'''
-from periphery import I2C
-import time
-
-def generate_command(register, value):
-    return [I2C.Message([register, value])]
-
-def send_command(i2c, address, cmd, wait=True):
-    i2c.transfer(address, cmd)
-    if wait:
-        time.sleep(0.005) # sleep for 5 ms
-
-def write(i2c, address, register, value):
-    cmd = generate_command(register, value)
-    send_command(i2c, address, cmd)
-
-i2c = I2C('/dev/i2c-0')
-
-write(i2c, 0x29, 0x80, 0x01)
-
-write(i2c, 0x29, 0x85, 0x12)
-
-
-query = [I2C.Message([0x88]), I2C.Message([0x00], read=True)]
-i2c.transfer(0x29, query)
-print(query[1].data)
-
-query = [I2C.Message([0x89]), I2C.Message([0x00], read=True)]
-i2c.transfer(0x29, query)
-print(query[1].data)
-
-query = [I2C.Message([0x8A]), I2C.Message([0x00], read=True)]
-i2c.transfer(0x29, query)
-print(query[1].data)
-
-query = [I2C.Message([0x8B]), I2C.Message([0x00], read=True)]
-i2c.transfer(0x29, query)
-print(query[1].data)
-'''
-
-
-
-
 from periphery import I2C
 import time
 
@@ -149,12 +105,6 @@ class LTR329ALS01:
 
         data1 = int(self.__get_word(c1_1, c1_0))
         data0 = int(self.__get_word(c0_1, c0_0))
-
-        print(data1)
-        print(data0)
-
-        #cmd = self.__get_standby_cmd()
-        #self.__write(self.ALS_CONTR, cmd)
 
         return (data0, data1)
 
