@@ -1,6 +1,6 @@
 
-from periphery import I2C
 import time
+from periphery import I2C
 
 class SHTC3:
     SHT_I2CADDR = 0x70
@@ -24,14 +24,14 @@ class SHTC3:
         self.i2c_bus = i2c_bus
         self.i2c = I2C('/dev/i2c-0')
         self.time_to_take_measurment_ms = 12.1
-    
+
     def get_part_id(self):
         # read part id
         query = [I2C.Message([self.SHT_PART_ID>>8, self.SHT_PART_ID&0xFF]), I2C.Message([0x00]*2, read=True)]
         self.i2c.transfer(self.SHT_I2CADDR, query)
         part_id = self.__get_word(query[1].data[0], query[1].data[1])
         return part_id
-    
+
     def get_temp_humidity(self):
 
         #send wake up
@@ -48,10 +48,10 @@ class SHTC3:
         self.i2c.transfer(self.SHT_I2CADDR, query)
 
         temp_raw = self.__get_word(query[0].data[0], query[0].data[1])
-        temp_crc = query[0].data[2]
+        #temp_crc = query[0].data[2]
 
         humidity_raw = self.__get_word(query[0].data[3], query[0].data[4])
-        humidity_crc = query[0].data[5]
+        #humidity_crc = query[0].data[5]
 
         # TO DO: check crc
 

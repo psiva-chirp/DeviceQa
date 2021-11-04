@@ -1,5 +1,5 @@
-from periphery import I2C
 import time
+from periphery import I2C
 
 class LTR329ALS01:
     ALS_I2CADDR = 0x29
@@ -68,7 +68,7 @@ class LTR329ALS01:
 
     ALS_MAX_WAKEUP_TIME = 0.01
 
-    def __init__(self, i2c_bus='/dev/i2c-0', gain = ALS_GAIN_48X, integration = ALS_INT_100ms, rate = ALS_RATE_500ms):
+    def __init__(self, i2c_bus='/dev/i2c-0', gain=ALS_GAIN_48X, integration=ALS_INT_100ms, rate=ALS_RATE_500ms):
         self.i2c_bus = i2c_bus
         self.i2c = I2C(i2c_bus)
 
@@ -98,7 +98,7 @@ class LTR329ALS01:
         query = [I2C.Message([register]), I2C.Message([0x00], read=True)]
         self.i2c.transfer(self.ALS_I2CADDR, query)
         return query[1].data[0]
-    
+
     def __send_wake_up(self):
         cntrl = self.__read(self.ALS_CONTR)
         als_mode = cntrl % 2
@@ -111,10 +111,10 @@ class LTR329ALS01:
             time.sleep(self.ALS_MAX_WAKEUP_TIME)
         else:
             print('sensor already active')
-    
+
     def __wait_for_new_reading(self):
         has_new_data = False
-        for i in range(0,self.max_new_data_checks):
+        for i in range(0, self.max_new_data_checks):
             status = self.__read(self.ALS_STATUS)
             data_status = (status >> 2) % 2
             if data_status == 1:
@@ -166,5 +166,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
